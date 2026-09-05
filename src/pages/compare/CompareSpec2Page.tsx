@@ -16,7 +16,7 @@ import ProfileMenu from '../../components/layout/ProfileMenu'
 import RankBadge from '../../components/compare/RankBadge'
 import RankPagination from '../../components/compare/RankPagination'
 import { fetchSearchPeers, type CompareSpecProfile } from '../../api/compare'
-import { fetchMyProfile, type MyProfileData } from '../../api/profile'
+import { fetchMyProfile } from '../../api/profile'
 import { useEffect } from 'react'
 import { JOB_CATEGORIES } from '../../data/jobCategories'
 import { COLLEGES } from '../../data/departments'
@@ -47,22 +47,30 @@ const RANK_PAGE_SIZE = 10
 export default function CompareSpec2Page() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const hasSavedComparison = searchParams.get('searched') === '1'
 
-  const [pendingGrade, setPendingGrade] = useState<string | null>(searchParams.get('grade'))
-  const [pendingGpaRange, setPendingGpaRange] = useState(searchParams.get('gpaRange') || DEFAULT_GPA_RANGE)
-  const [pendingJob, setPendingJob] = useState<string | null>(searchParams.get('job') || null)
-  const [pendingCompareCriterion, setPendingCompareCriterion] = useState(searchParams.get('criterion') || DEFAULT_COMPARE_CRITERION)
-  const [pendingMajor, setPendingMajor] = useState(searchParams.get('major') || '경영학부')
-  
-  const appliedGrade = searchParams.get('grade')
-  const appliedJob = searchParams.get('job') || null
-  const appliedGpaRange = searchParams.get('gpaRange') || DEFAULT_GPA_RANGE
-  const appliedCompareCriterion = searchParams.get('criterion') || DEFAULT_COMPARE_CRITERION
-  const appliedMajor = searchParams.get('major') || '경영학부'
-  
+  const initialGrade = hasSavedComparison ? searchParams.get('grade') : DEFAULT_GRADE
+  const initialGpaRange = searchParams.get('gpaRange') || DEFAULT_GPA_RANGE
+  const initialJob = searchParams.get('job') || null
+  const initialCriterion = searchParams.get('criterion') || DEFAULT_COMPARE_CRITERION
+  const initialMajor = searchParams.get('major') || '경영학부'
+  const initialPage = Math.max(1, Number(searchParams.get('page')) || 1)
+
+  const [pendingGrade, setPendingGrade] = useState<string | null>(initialGrade)
+  const [pendingGpaRange, setPendingGpaRange] = useState(initialGpaRange)
+  const [pendingJob, setPendingJob] = useState<string | null>(initialJob)
+  const [pendingCompareCriterion, setPendingCompareCriterion] = useState(initialCriterion)
+  const [appliedGrade, setAppliedGrade] = useState<string | null>(initialGrade)
+  const [appliedJob, setAppliedJob] = useState<string | null>(initialJob)
   const [myNickname, setMyNickname] = useState<string | null>(null)
   const [isReady, setIsReady] = useState(false)
-  const [page, setPage] = useState(1)
+  const [appliedGpaRange, setAppliedGpaRange] = useState(initialGpaRange)
+  const [appliedCompareCriterion, setAppliedCompareCriterion] = useState(initialCriterion)
+  const [page, setPage] = useState(initialPage)
+  const [searchRequest, setSearchRequest] = useState(0)
+
+  const [pendingMajor, setPendingMajor] = useState(initialMajor)
+  const [appliedMajor, setAppliedMajor] = useState(initialMajor)
   const [profiles, setProfiles] = useState<CompareSpecProfile[]>([])
   
 
@@ -74,24 +82,19 @@ export default function CompareSpec2Page() {
     initializedRef.current = true
     
     fetchMyProfile().then((myProfile) => {
-      const gradeNum = Math.max(1, Math.min(4, new Date().getFullYear() - myProfile.entranceYear + 1))
-      const grade = gradeNum + '학년';
-      
-      // 만약 URL 파라미터가 비어있다면(첫 진입 시) 내 정보로 초기화
-      if (!searchParams.has('major')) {
-        const newParams = new URLSearchParams()
-        newParams.set('major', myProfile.major)
-        newParams.set('grade', grade)
-        if (myProfile.desiredJob) newParams.set('job', myProfile.desiredJob)
-        newParams.set('gpaRange', DEFAULT_GPA_RANGE)
-        newParams.set('criterion', DEFAULT_COMPARE_CRITERION)
-        setSearchParams(newParams, { replace: true })
-        
+      const gradeNum = Math.max(
+        1,
+        Math.min(4, new Date().getFullYear() - myProfile.entranceYear + 1),
+      )
+      const grade = `${gradeNum}학년`
+      if (!hasSavedComparison) {
         setPendingMajor(myProfile.major)
+        setAppliedMajor(myProfile.major)
         setPendingGrade(grade)
+        setAppliedGrade(grade)
         setPendingJob(myProfile.desiredJob || null)
+        setAppliedJob(myProfile.desiredJob || null)
       }
-      
       setMyNickname(myProfile.nickname);
       setIsReady(true);
     }).catch((e) => {
@@ -99,8 +102,7 @@ export default function CompareSpec2Page() {
       alert('스펙 등록을 먼저 완료해주세요.');
       navigate('/mypage/specs/register');
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasSavedComparison, navigate])
 
   const gpaColumnLabel = appliedCompareCriterion === '전공 학점만' ? '전공 학점' : '평균 학점'
 
@@ -114,25 +116,37 @@ export default function CompareSpec2Page() {
 
     
     if (!isReady) return;
-    const entranceYear = appliedGrade ? 2026 - parseInt(appliedGrade) + 1 : undefined;
+    const entranceYear = appliedGrade
+      ? new Date().getFullYear() - parseInt(appliedGrade) + 1
+      : undefined
     fetchSearchPeers({ major: appliedMajor, entranceYear, desiredJob: appliedJob || undefined, minGpa, maxGpa })
       .then((res: CompareSpecProfile[]) => setProfiles(res || []))
       .catch((e: Error) => console.error(e))
       
-  }, [isReady, appliedMajor, appliedGpaRange, appliedGrade, appliedJob]);
+  }, [isReady, appliedMajor, appliedGpaRange, appliedGrade, appliedJob, searchRequest]);
 
-  const filteredStudents = profiles.map((p, i) => ({
-    anonId: p.virtualNickname || p.anonymousUuid.substring(0, 8),
-    uuid: p.anonymousUuid,
-    department: p.major,
-    gpa: p.gpa.toFixed(2),
-    gpaPercentile: Math.round(((i + 1) / (profiles.length || 1)) * 100),
-    isMe: p.virtualNickname === myNickname,
-    lang: p.toeicScore > 0 ? 'TOEIC ' + p.toeicScore : '없음',
-    certs: p.verificationCount + '개',
-    intern: p.internCount > 0 ? p.internCount + '회' : '없음',
-    rank: i + 1,
-  }))
+  const sortedProfiles = [...profiles].sort((a, b) => b.gpa - a.gpa)
+  const rankByGpa = new Map<string, number>()
+  sortedProfiles.forEach((profile, index) => {
+    const gpaKey = profile.gpa.toFixed(2)
+    if (!rankByGpa.has(gpaKey)) rankByGpa.set(gpaKey, index + 1)
+  })
+
+  const filteredStudents = sortedProfiles.map((p) => {
+    const rank = rankByGpa.get(p.gpa.toFixed(2)) || 1
+    return {
+      anonId: p.virtualNickname || p.anonymousUuid.substring(0, 8),
+      uuid: p.anonymousUuid,
+      department: p.major,
+      gpa: p.gpa.toFixed(2),
+      gpaPercentile: Math.max(1, Math.ceil((rank / (sortedProfiles.length || 1)) * 100)),
+      isMe: p.virtualNickname === myNickname,
+      lang: p.toeicScore > 0 ? 'TOEIC ' + p.toeicScore : '없음',
+      certs: p.verificationCount + '개',
+      intern: p.internCount > 0 ? p.internCount + '회' : '없음',
+      rank,
+    }
+  })
 
   const totalPages = Math.max(1, Math.ceil(filteredStudents.length / RANK_PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -142,14 +156,30 @@ export default function CompareSpec2Page() {
   )
 
   const handleSearch = () => {
-    const newParams = new URLSearchParams()
-    newParams.set('major', pendingMajor)
-    if (pendingGrade) newParams.set('grade', pendingGrade)
-    if (pendingJob) newParams.set('job', pendingJob)
-    newParams.set('gpaRange', pendingGpaRange)
-    newParams.set('criterion', pendingCompareCriterion)
-    setSearchParams(newParams)
+    setAppliedMajor(pendingMajor)
+    setAppliedGrade(pendingGrade)
+    setAppliedJob(pendingJob)
+    setAppliedGpaRange(pendingGpaRange)
+    setAppliedCompareCriterion(pendingCompareCriterion)
     setPage(1)
+    const nextParams = new URLSearchParams({
+      searched: '1',
+      major: pendingMajor,
+      gpaRange: pendingGpaRange,
+      criterion: pendingCompareCriterion,
+      page: '1',
+    })
+    if (pendingGrade) nextParams.set('grade', pendingGrade)
+    if (pendingJob) nextParams.set('job', pendingJob)
+    setSearchParams(nextParams, { replace: true })
+    setSearchRequest((request) => request + 1)
+  }
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage)
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.set('page', String(nextPage))
+    setSearchParams(nextParams, { replace: true })
   }
 
   const handleReset = () => {
@@ -158,14 +188,14 @@ export default function CompareSpec2Page() {
     setPendingJob(null)
     setPendingCompareCriterion(DEFAULT_COMPARE_CRITERION)
     setPendingMajor('경영학부')
-    
-    const newParams = new URLSearchParams()
-    newParams.set('major', '경영학부')
-    newParams.set('grade', DEFAULT_GRADE)
-    newParams.set('gpaRange', DEFAULT_GPA_RANGE)
-    newParams.set('criterion', DEFAULT_COMPARE_CRITERION)
-    setSearchParams(newParams)
+    setAppliedGrade(DEFAULT_GRADE)
+    setAppliedGpaRange(DEFAULT_GPA_RANGE)
+    setAppliedCompareCriterion(DEFAULT_COMPARE_CRITERION)
+    setAppliedMajor('경영학부')
+    setAppliedJob(null)
     setPage(1)
+    setSearchParams({}, { replace: true })
+    setSearchRequest((request) => request + 1)
   }
 
   return (
@@ -401,7 +431,10 @@ export default function CompareSpec2Page() {
                 {pageStudents.map((student) => (
                   <tr
                     key={student.uuid}
-                    onClick={() => navigate(`/compare/${encodeURIComponent(student.uuid)}`)}
+                    onClick={() => navigate(
+                      `/compare/${encodeURIComponent(student.uuid)}`,
+                      { state: { gpaPercentile: student.gpaPercentile } },
+                    )}
                     className={`cursor-pointer border-b border-gray-50 last:border-none hover:bg-gray-50/70 ${student.isMe ? 'bg-blue-50/50' : ''}`}
                   >
                     <td className="px-4 py-3.5">
@@ -439,7 +472,7 @@ export default function CompareSpec2Page() {
                 ))}
               </tbody>
             </table>
-            <RankPagination currentPage={currentPage} totalPages={totalPages} onChange={setPage} />
+            <RankPagination currentPage={currentPage} totalPages={totalPages} onChange={handlePageChange} />
           </div>
           )}
         </section>

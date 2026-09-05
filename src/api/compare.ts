@@ -31,6 +31,7 @@ export interface ProfileDetailResponse {
   entranceYear: number
   desiredJob: string
   gpa: number
+  gpaPercentile: number
   toeicScore: number
   certificates: CertificateDto[]
   activities: ActivityDto[]

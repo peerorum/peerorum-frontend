@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProfileDetail } from '../../api/comparison'
 import type { ProfileDetailResponse } from '../../api/comparison'
-import { fetchMyProfile, type MyProfileData } from '../../api/profile'
-import { Link, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   Award,
   ArrowLeft,
@@ -18,6 +17,7 @@ import {
 import Header from '../../components/layout/Header'
 import Footer from '../../components/layout/Footer'
 import PenguinMascot from '../../components/ui/PenguinMascot'
+import { fetchMyProfile, type MyProfileData } from '../../api/profile'
 
 const GPA_BUCKETS = [
   { range: '3.0', height: 18, min: 0 },
@@ -38,6 +38,8 @@ function activeGpaBucketIndex(gpa: number) {
 }
 
 export default function AnonymousProfileDetailPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [activeTab, setActiveTab] = useState<'spec' | 'timeline'>('spec')
   const { studentId } = useParams<{ studentId: string }>()
   const [student, setStudent] = useState<ProfileDetailResponse | null>(null)
@@ -73,18 +75,9 @@ export default function AnonymousProfileDetailPage() {
 
   const activeGpaIndex = activeGpaBucketIndex(student.gpa)
   
-  // GPA percentile: calculate based on actual GPA value
-  // Higher GPA = lower percentile number (better ranking)
-  const calcGpaPercentile = (gpa: number) => {
-    if (gpa >= 4.3) return 5;
-    if (gpa >= 4.0) return 10;
-    if (gpa >= 3.7) return 20;
-    if (gpa >= 3.5) return 30;
-    if (gpa >= 3.0) return 50;
-    if (gpa >= 2.5) return 70;
-    return 90;
-  };
-  const gpaPercentile = calcGpaPercentile(student.gpa || 0);
+  const gpaPercentile =
+    (location.state as { gpaPercentile?: number } | null)?.gpaPercentile ??
+    student.gpaPercentile
 
   const activityString = student.activities && student.activities.length > 0 
     ? `대외활동 ${student.activities.length}회` 
@@ -150,13 +143,14 @@ return (
       <Header />
 
       <main className="mx-auto max-w-6xl px-6 py-8">
-        <Link
-          to="/compare"
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
           className="flex items-center gap-1.5 text-[13px] font-medium text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           비교 결과로 돌아가기
-        </Link>
+        </button>
 
         <div className="mt-4 flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm shadow-black/[0.02]">
           <div className="flex items-center gap-4">

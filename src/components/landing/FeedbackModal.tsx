@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Modal from '../ui/Modal'
+import { createFeedback } from '../../api/feedback'
 
 export default function FeedbackModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [message, setMessage] = useState('')
@@ -8,11 +9,22 @@ export default function FeedbackModal({ open, onClose }: { open: boolean; onClos
 
   const canSubmit = message.trim().length > 0
 
-  const handleSubmit = () => {
-    if (!canSubmit) return
-    setSubmitted(true)
-    setMessage('')
-    setContact('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async () => {
+    if (!canSubmit || isSubmitting) return
+    try {
+      setIsSubmitting(true)
+      await createFeedback({ content: message, contact })
+      setSubmitted(true)
+      setMessage('')
+      setContact('')
+    } catch (e) {
+      console.error(e)
+      alert('피드백 등록에 실패했습니다.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleClose = () => {
@@ -80,11 +92,11 @@ export default function FeedbackModal({ open, onClose }: { open: boolean; onClos
             </button>
             <button
               type="button"
-              disabled={!canSubmit}
+              disabled={!canSubmit || isSubmitting}
               onClick={handleSubmit}
               className="rounded-xl bg-blue-600 px-5 py-2.5 text-[13.5px] font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
             >
-              피드백 제출
+              {isSubmitting ? '제출 중...' : '피드백 제출'}
             </button>
           </div>
         </div>

@@ -1,38 +1,48 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ChevronLeft, ChevronRight, ChevronUp, Lock } from 'lucide-react'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import FeedbackModal from '../components/landing/FeedbackModal'
-import { FEEDBACKS, FEEDBACK_STATUS_STYLE, type FeedbackStatus } from '../data/mockFeedback'
+import { FEEDBACK_STATUS_STYLE } from '../data/mockFeedback'
+import { fetchFeedbacks, upvoteFeedback, type FeedbackResponse } from '../api/feedback'
 
-const TABS: (FeedbackStatus | '전체')[] = ['전체', '개선 예정', '개선 중', '완료']
+const TABS = ['전체', '개선 예정', '개선 중', '완료']
+const STATUS_MAP: Record<string, any> = { 'PENDING': '개선 예정', 'IN_PROGRESS': '개선 중', 'RESOLVED': '완료' }
 const PAGE_SIZE = 7
 const ROW_HEIGHT = 80
 const ROW_GAP = 12
 const LIST_HEIGHT = PAGE_SIZE * ROW_HEIGHT + (PAGE_SIZE - 1) * ROW_GAP
 
 export default function FeedbackBoardPage() {
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>('전체')
+  const [activeTab, setActiveTab] = useState<string>('전체')
+  const [feedbacks, setFeedbacks] = useState<FeedbackResponse[]>([])
+  const loadFeedbacks = async () => {
+    try {
+      const data = await fetchFeedbacks();
+      setFeedbacks(data);
+    } catch (e) { console.error(e); }
+  }
+  useEffect(() => { loadFeedbacks(); }, [])
   const [page, setPage] = useState(1)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [upvoted, setUpvoted] = useState<Set<number>>(new Set())
 
-  const selectTab = (tab: (typeof TABS)[number]) => {
+  const selectTab = (tab: string) => {
     setActiveTab(tab)
     setPage(1)
   }
 
-  const toggleUpvote = (id: number) => {
-    setUpvoted((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+  const toggleUpvote = async (id: number) => {
+    if (upvoted.has(id)) return;
+    try {
+      await upvoteFeedback(id);
+      setUpvoted(prev => { const next = new Set(prev); next.add(id); return next; });
+      setFeedbacks(prev => prev.map(f => f.id === id ? { ...f, upvotes: f.upvotes + 1 } : f));
+    } catch(e) {}
   }
 
-  const filtered = FEEDBACKS.filter((item) => activeTab === '전체' || item.status === activeTab)
+  const filtered = feedbacks.filter((item) => activeTab === '전체' || STATUS_MAP[item.status] === activeTab)
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
   const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
@@ -67,8 +77,8 @@ export default function FeedbackBoardPage() {
             {TABS.map((tab) => {
               const count =
                 tab === '전체'
-                  ? FEEDBACKS.length
-                  : FEEDBACKS.filter((f) => f.status === tab).length
+                  ? feedbacks.length
+                  : feedbacks.filter((f) => STATUS_MAP[f.status] === tab).length
               return (
                 <button
                   key={tab}
@@ -97,6 +107,7 @@ export default function FeedbackBoardPage() {
           <div className="mt-8 flex flex-col gap-3 overflow-hidden" style={{ height: LIST_HEIGHT }}>
             {pageItems.map((item) => {
               const isUpvoted = upvoted.has(item.id)
+              const statusStr = STATUS_MAP[item.status] || '개선 예정'
               return (
                 <Link
                   key={item.id}
@@ -118,21 +129,21 @@ export default function FeedbackBoardPage() {
                   >
                     <ChevronUp className="h-4 w-4" />
                     <span className="text-[12.5px] font-bold">
-                      {item.votes + (isUpvoted ? 1 : 0)}
+                      {item.upvotes + (isUpvoted ? 1 : 0)}
                     </span>
                   </button>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[14.5px] font-semibold text-ink-900">
-                      {item.title}
+                      {item.content.substring(0, 30)}{item.content.length > 30 ? "..." : ""}
                     </p>
                     <p className="mt-1 truncate text-[13px] leading-relaxed text-gray-500">
-                      {item.description}
+                      {item.content}
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${FEEDBACK_STATUS_STYLE[item.status]}`}
+                    className={`shrink-0 rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${FEEDBACK_STATUS_STYLE[statusStr as keyof typeof FEEDBACK_STATUS_STYLE] || FEEDBACK_STATUS_STYLE['개선 예정']}`}
                   >
-                    {item.status}
+                    {statusStr}
                   </span>
                 </Link>
               )
@@ -174,7 +185,7 @@ export default function FeedbackBoardPage() {
 
       <Footer />
 
-      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+      <FeedbackModal open={feedbackOpen} onClose={() => { setFeedbackOpen(false); loadFeedbacks(); }} />
     </div>
   )
 }

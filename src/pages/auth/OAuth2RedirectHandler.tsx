@@ -67,7 +67,7 @@ export default function OAuth2RedirectHandler() {
           department: profile?.major || '',
           desiredJob: profile?.desiredJob || '',
           role: session.role === 'ROLE_ADMIN' ? 'admin' : 'user',
-          hasSpec: true,
+          hasSpec: Boolean(profile?.gpa && profile.gpa > 0),
           provider: 'SOCIAL',
         })
 

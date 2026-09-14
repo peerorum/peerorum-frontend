@@ -16,7 +16,6 @@ import {
 } from 'lucide-react'
 import Header from '../../components/layout/Header'
 import Footer from '../../components/layout/Footer'
-import Modal from '../../components/ui/Modal'
 import PenguinMascot from '../../components/ui/PenguinMascot'
 import { fetchMyProfile, type MyProfileData } from '../../api/profile'
 
@@ -46,7 +45,6 @@ export default function AnonymousProfileDetailPage() {
   const [student, setStudent] = useState<ProfileDetailResponse | null>(null)
   const [myProfile, setMyProfile] = useState<MyProfileData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false)
 
   useEffect(() => {
     if (studentId) {
@@ -332,9 +330,6 @@ return (
                       </p>
                     </div>
                   </div>
-                  <button className="mt-3 text-[12px] font-medium text-blue-600 hover:underline" onClick={() => setIsActivityModalOpen(true)}>
-                    더보기 &gt;
-                  </button>
                 </div>
 
                 <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm shadow-black/[0.02]">
@@ -418,61 +413,6 @@ return (
       </main>
 
       <Footer />
-      
-      {/* Activity and Award Details Modal */}
-      <Modal open={isActivityModalOpen} onClose={() => setIsActivityModalOpen(false)}>
-        <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-            <Briefcase className="h-6 w-6 text-blue-600" />
-          </div>
-          <h2 className="mt-4 text-[20px] font-bold text-ink-900">활동 및 공모전 상세내역</h2>
-          <p className="mt-2 text-[14px] text-gray-500">
-            {student?.virtualNickname}님의 스펙 상세 정보입니다.
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-6">
-          <div>
-            <h3 className="mb-3 text-[15px] font-bold text-ink-900">대외활동</h3>
-            {student?.activities && student.activities.length > 0 ? (
-              <ul className="flex flex-col gap-3">
-                {student.activities.map((act, i) => (
-                  <li key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-                    <p className="text-[14px] font-bold text-ink-900">{act.activityName}</p>
-                    {/* Add any extra fields like period, detail if they exist in the response type, wait we only mapped activityName in backend for now. But let's check ProfileDetailResponse */}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-[14px] text-gray-500">등록된 활동이 없습니다.</p>
-            )}
-          </div>
-
-          <div>
-            <h3 className="mb-3 text-[15px] font-bold text-ink-900">공모전</h3>
-            {student?.awards && student.awards.length > 0 ? (
-              <ul className="flex flex-col gap-3">
-                {student.awards.map((award, i) => (
-                  <li key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-                    <p className="text-[14px] font-bold text-ink-900">{award.awardName}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-[14px] text-gray-500">등록된 공모전이 없습니다.</p>
-            )}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="mt-8 w-full rounded-xl bg-blue-600 px-4 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-blue-700"
-          onClick={() => setIsActivityModalOpen(false)}
-        >
-          확인
-        </button>
-      </Modal>
-
     </div>
   )
 }

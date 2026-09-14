@@ -22,7 +22,15 @@ function yAt(value: number) {
 }
 
 export default function SignupTrendChart({ data }: { data: Point[] }) {
-  const [activeIndex, setActiveIndex] = useState(data.length - 1)
+  const [activeIndex, setActiveIndex] = useState(Math.max(0, data.length - 1))
+
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[260px] items-center justify-center text-[13px] text-gray-400">
+        표시할 가입 추이 데이터가 없습니다.
+      </div>
+    )
+  }
 
   const linePath = data
     .map((point, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i, data.length)} ${yAt(point.count)}`)

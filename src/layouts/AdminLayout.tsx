@@ -9,6 +9,7 @@ import {
   Home,
   LogOut,
   Megaphone,
+  MessageSquare,
   PieChart,
   Server,
   Settings,
@@ -40,6 +41,7 @@ const NAV_GROUPS: { label: string | null; items: NavItem[] }[] = [
     items: [
       { label: '스펙 카드 관리', to: '/admin/spec-cards', icon: CreditCard },
       { label: '공지사항 관리', to: '/admin/notices', icon: Megaphone },
+      { label: '피드백 관리', to: '/admin/feedbacks', icon: MessageSquare },
     ],
   },
   {

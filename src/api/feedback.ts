@@ -28,3 +28,7 @@ export const fetchFeedbacks = async (): Promise<FeedbackResponse[]> => {
 export const upvoteFeedback = async (id: number): Promise<void> => {
   await api.post(`/feedbacks/${id}/upvote`)
 }
+
+export const updateFeedbackStatus = async (id: number, status: FeedbackStatus): Promise<void> => {
+  await api.put(`/feedbacks/${id}/status`, null, { params: { status } })
+}

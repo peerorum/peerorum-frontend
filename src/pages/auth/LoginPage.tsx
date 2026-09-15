@@ -51,13 +51,6 @@ export default function LoginPage() {
       saveAuthenticationSession(session)
 
       if (session.role === 'ROLE_GUEST') {
-        login({
-          name: session.name,
-          email: email.trim(),
-          role: 'user',
-          hasSpec: false,
-          provider: 'LOCAL',
-        })
         navigate('/signup?mode=onboarding')
         return
       }

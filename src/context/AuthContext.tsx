@@ -64,7 +64,9 @@ function emptyUser(partial?: Partial<AuthUser>): AuthUser {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
-    return localStorage.getItem('token') ? emptyUser() : null
+    const hasToken = Boolean(localStorage.getItem('token'))
+    const isGuest = localStorage.getItem('role') === 'ROLE_GUEST'
+    return hasToken && !isGuest ? emptyUser() : null
   })
 
   const login: AuthContextValue['login'] = useCallback((partial) => {

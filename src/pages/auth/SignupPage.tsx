@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -210,7 +210,6 @@ export default function SignupPage() {
   const [desiredJob, setDesiredJob] = useState('')
 
   const [nickname, setNickname] = useState('')
-  const nicknameCounterRef = useRef(0)
 
   const allRequiredChecked = REQUIRED_TERM_KEYS.every((key) => checked[key])
   const allChecked = Object.values(checked).every(Boolean)
@@ -282,8 +281,7 @@ export default function SignupPage() {
 
   const fillRandomNickname = () => {
     const base = NICKNAME_SUGGESTIONS[Math.floor(Math.random() * NICKNAME_SUGGESTIONS.length)]
-    nicknameCounterRef.current += 1
-    const suffix = String(nicknameCounterRef.current)
+    const suffix = String(Math.floor(Math.random() * 100001))
     setNickname(`${base.slice(0, 10 - suffix.length)}${suffix}`)
   }
 

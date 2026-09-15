@@ -310,7 +310,7 @@ export default function SpecEditPage() {
       // 1. Submit unverified categories (Activity, Intern, Award)
       // Note: Full edit/delete is not supported by backend yet, so we just append them if they are complete.
       for (const entry of entries.activity) {
-        if (entry.name && entry.name.trim().length > 0 && entry._status !== 'verified') {
+        if (entry.name && entry.name.trim().length > 0 && entry._status !== 'verified' && entry._isFromDB !== 'true') {
           await submitActivity({
             activityName: entry.name,
             period: entry.period || '',
@@ -319,7 +319,7 @@ export default function SpecEditPage() {
         }
       }
       for (const entry of entries.intern) {
-        if (entry.company && entry.company.trim().length > 0 && entry._status !== 'verified') {
+        if (entry.company && entry.company.trim().length > 0 && entry._status !== 'verified' && entry._isFromDB !== 'true') {
           await submitIntern({
             company: entry.company,
             period: entry.period || '',
@@ -328,7 +328,7 @@ export default function SpecEditPage() {
         }
       }
       for (const entry of entries.award) {
-        if (entry.name && entry.name.trim().length > 0 && entry._status !== 'verified') {
+        if (entry.name && entry.name.trim().length > 0 && entry._status !== 'verified' && entry._isFromDB !== 'true') {
           await submitAward({
             name: entry.name,
             host: entry.host || '',

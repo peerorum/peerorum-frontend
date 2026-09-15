@@ -37,13 +37,13 @@ export function SpecProvider({ children }: { children: ReactNode }) {
   const loadFromProfile = (profile: MyProfileData) => {
     const languageEntries = [];
     if (profile.toeicScore) {
-      languageEntries.push({ test: 'TOEIC', score: String(profile.toeicScore), _status: 'verified' });
+      languageEntries.push({ test: 'TOEIC', score: String(profile.toeicScore), _status: 'verified', _isFromDB: 'true' });
     }
     if (profile.opicGrade) {
-      languageEntries.push({ test: 'OPIc', score: profile.opicGrade, _status: 'verified' });
+      languageEntries.push({ test: 'OPIc', score: profile.opicGrade, _status: 'verified', _isFromDB: 'true' });
     }
     if (profile.toeicSpeakingGrade) {
-      languageEntries.push({ test: 'TOEIC Speaking', score: profile.toeicSpeakingGrade, _status: 'verified' });
+      languageEntries.push({ test: 'TOEIC Speaking', score: profile.toeicSpeakingGrade, _status: 'verified', _isFromDB: 'true' });
     }
 
     const newEntries: SpecEntries = {
@@ -51,33 +51,35 @@ export function SpecProvider({ children }: { children: ReactNode }) {
         gpaAverage: String(profile.gpa),
         ...(profile.majorGpa ? { majorGpaAverage: String(profile.majorGpa) } : {}),
         ...(profile.convertedScore ? { convertedScore: String(profile.convertedScore) } : {}),
-        _status: 'verified'
+        _status: 'verified', _isFromDB: 'true'
       } as SpecEntry] : [],
       language: languageEntries as any,
       certificate: profile.certificates.map(c => ({
         name: c.certName,
         issuer: 'Q-Net (Mock)',
         date: c.issueDate,
-        _status: c.status === 'VERIFIED' ? 'verified' : c.status === 'PENDING' ? 'pending' : 'rejected'
+        _status: c.status === 'VERIFIED' ? 'verified' : c.status === 'PENDING' ? 'pending' : 'rejected', _isFromDB: 'true'
       })),
       activity: profile.activities.map(a => ({
         name: a.activityName,
         period: a.period,
         detail: a.detail,
-        _status: a.status === 'VERIFIED' ? 'verified' : a.status === 'PENDING' ? 'pending' : a.status === 'NONE' ? 'none' : 'rejected'
+        _status: a.status === 'VERIFIED' ? 'verified' : a.status === 'PENDING' ? 'pending' : a.status === 'NONE' ? 'none' : 'rejected', _isFromDB: 'true'
       })),
       intern: profile.interns.map(i => ({
         company: i.company,
         period: i.period,
         detail: i.detail,
-        _status: 'none'
+        _status: 'none',
+        _isFromDB: 'true'
       })),
       award: profile.awards.map(a => ({
         name: a.name,
         host: a.host,
         date: a.date,
         detail: a.detail,
-        _status: 'none'
+        _status: 'none',
+        _isFromDB: 'true'
       }))
     }
 

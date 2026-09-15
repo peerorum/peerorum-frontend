@@ -272,7 +272,17 @@ export default function SpecRegisterPage() {
   const completeCountByCategory = (category: CategoryConfig) =>
     entries[category.key].filter((entry) => isEntryComplete(category, entry)).length
 
-  const isGpaComplete = completeCountByCategory(CATEGORIES.find((c) => c.key === 'gpa')!) > 0
+  const isGpaComplete = entries.gpa.some(entry => isEntryComplete(CATEGORIES.find((c) => c.key === 'gpa')!, entry) && entry._status === 'verified')
+
+  const hasUnverifiedRequiredEntry = CATEGORIES.some((category) => {
+    if (category.hasVerification === false) return false
+    return entries[category.key].some((entry) => {
+      const hasValue = Object.entries(entry).some(
+        ([key, value]) => !key.startsWith('_') && String(value).trim().length > 0,
+      )
+      return hasValue && entry._status !== 'verified'
+    })
+  })
 
   const addEntry = (categoryKey: string) => {
     setEntries((prev) => ({ ...prev, [categoryKey]: [...prev[categoryKey], {}] }))
@@ -563,7 +573,7 @@ export default function SpecRegisterPage() {
 
           <button
             type="button"
-            disabled={!isGpaComplete || isSubmitting}
+            disabled={hasUnverifiedRequiredEntry || !isGpaComplete || isSubmitting}
             onClick={handleSubmit}
             className="w-full rounded-xl bg-blue-600 py-3.5 text-[15px] font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
           >
@@ -661,7 +671,7 @@ export default function SpecRegisterPage() {
                   alert('성공적으로 인증되었습니다!')
                 } else {
                   updateEntry(target.categoryKey, target.index, '_status', 'rejected')
-                  alert('인증에 실패했습니다. 사진이나 입력값을 다시 확인해주세요.')
+                  alert('인증 실패: ' + (result?.data?.reason || '사진이나 입력값을 다시 확인해주세요.'))
                 }
               } catch (e) {
                 console.error('File upload failed', e)

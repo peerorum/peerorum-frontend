@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Check } from 'lucide-react'
 import AdminLayout from '../../layouts/AdminLayout'
 import {
   fetchAdminFeedbacks,
@@ -22,6 +23,20 @@ export default function AdminFeedbacksPage() {
   const [answerDrafts, setAnswerDrafts] = useState<Record<number, string>>({})
   const [summaryDrafts, setSummaryDrafts] = useState<Record<number, string>>({})
   const [savingId, setSavingId] = useState<number | null>(null)
+  const [savedFlash, setSavedFlash] = useState<{ id: number; type: 'answer' | 'publish' | 'unpublish' } | null>(null)
+  const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const flashSaved = (id: number, type: 'answer' | 'publish' | 'unpublish') => {
+    if (flashTimerRef.current) clearTimeout(flashTimerRef.current)
+    setSavedFlash({ id, type })
+    flashTimerRef.current = setTimeout(() => setSavedFlash(null), 2000)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current)
+    }
+  }, [])
 
   const loadFeedbacks = async () => {
     try {
@@ -59,6 +74,7 @@ export default function AdminFeedbacksPage() {
       setFeedbacks((prev) =>
         prev.map((fb) => (fb.id === id ? { ...fb, answer, answeredAt: new Date().toISOString() } : fb)),
       )
+      flashSaved(id, 'answer')
     } catch (e) {
       console.error(e)
       alert('답변 저장에 실패했습니다.')
@@ -79,6 +95,7 @@ export default function AdminFeedbacksPage() {
       setFeedbacks((prev) =>
         prev.map((fb) => (fb.id === id ? { ...fb, boardSummary: summary, publishedAt: new Date().toISOString() } : fb)),
       )
+      flashSaved(id, 'publish')
     } catch (e) {
       console.error(e)
       alert('게시에 실패했습니다.')
@@ -93,6 +110,7 @@ export default function AdminFeedbacksPage() {
       await unpublishFeedback(id)
       setFeedbacks((prev) => prev.map((fb) => (fb.id === id ? { ...fb, boardSummary: null, publishedAt: null } : fb)))
       setSummaryDrafts((prev) => ({ ...prev, [id]: '' }))
+      flashSaved(id, 'unpublish')
     } catch (e) {
       console.error(e)
       alert('게시 취소에 실패했습니다.')
@@ -161,14 +179,22 @@ export default function AdminFeedbacksPage() {
                   placeholder="답변을 입력하세요..."
                   className="w-full resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-[13.5px] outline-none placeholder:text-gray-400 focus:border-blue-500"
                 />
-                <button
-                  type="button"
-                  onClick={() => handleSaveAnswer(fb.id)}
-                  disabled={savingId === fb.id}
-                  className="mt-2 rounded-lg bg-gray-900 px-4 py-2 text-[12.5px] font-semibold text-white transition-colors hover:bg-gray-700 disabled:opacity-50"
-                >
-                  답변 저장
-                </button>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAnswer(fb.id)}
+                    disabled={savingId === fb.id}
+                    className="rounded-lg bg-gray-900 px-4 py-2 text-[12.5px] font-semibold text-white transition-colors hover:bg-gray-700 disabled:opacity-50"
+                  >
+                    {savingId === fb.id ? '저장 중...' : '답변 저장'}
+                  </button>
+                  {savedFlash?.id === fb.id && savedFlash.type === 'answer' && (
+                    <span className="flex items-center gap-1 text-[12.5px] font-semibold text-emerald-600">
+                      <Check className="h-3.5 w-3.5" />
+                      저장 완료
+                    </span>
+                  )}
+                </div>
               </div>
 
               {fb.status === 'RESOLVED' && (
@@ -183,7 +209,7 @@ export default function AdminFeedbacksPage() {
                     placeholder="공개 게시판에 올라갈 개선사항 요약을 작성하세요..."
                     className="w-full resize-none rounded-xl border border-blue-100 bg-white px-4 py-2.5 text-[13.5px] outline-none placeholder:text-gray-400 focus:border-blue-500"
                   />
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-2 flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => handlePublish(fb.id)}
@@ -201,6 +227,12 @@ export default function AdminFeedbacksPage() {
                       >
                         게시 취소
                       </button>
+                    )}
+                    {savedFlash?.id === fb.id && (savedFlash.type === 'publish' || savedFlash.type === 'unpublish') && (
+                      <span className="flex items-center gap-1 text-[12.5px] font-semibold text-emerald-600">
+                        <Check className="h-3.5 w-3.5" />
+                        {savedFlash.type === 'publish' ? '게시 완료' : '게시 취소됨'}
+                      </span>
                     )}
                   </div>
                 </div>

@@ -438,65 +438,61 @@ export default function SpecRegisterPage() {
                         key={index}
                         className={index > 0 ? 'border-t border-gray-100 pt-4' : ''}
                       >
-                        {(entries[category.key].length > 1 || category.fileUpload) && (
-                          <div className="mb-2 flex items-center justify-between gap-2">
-                            <span className="flex items-center gap-2 text-[12px] font-semibold text-gray-400">
-                              {entries[category.key].length > 1 && (
-                                <>
-                                  {category.title.replace(' 입력', '')} {index + 1}
-                                  {!isEntryComplete(category, entry) && (
-                                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10.5px] font-semibold text-amber-600">
-                                      필수 항목을 입력해주세요
-                                    </span>
-                                  )}
-                                </>
-                              )}
-                            </span>
-                            <div className="flex shrink-0 items-center gap-1.5">
-                              {category.fileUpload && (
-                                <>
-                                  <button
-                                    type="button"
-                                    onClick={() => setUploadTarget({ categoryKey: category.key, index })}
-                                    className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11.5px] font-semibold text-gray-500 transition-colors hover:bg-gray-50"
-                                  >
-                                    <Paperclip className="h-3.5 w-3.5" />
-                                    파일선택
-                                  </button>
-                                  {(() => {
-                                    const status = getEvidenceStatus(entry)
-                                    return (
-                                      <span
-                                        className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11.5px] font-semibold ${
-                                          status === 'verified'
-                                            ? 'border-emerald-200 bg-white text-emerald-600'
-                                            : status === 'pending'
-                                              ? 'border-blue-200 bg-white text-blue-600'
-                                              : 'border-amber-200 bg-white text-amber-600'
-                                        }`}
-                                      >
-                                        {status === 'verified' && <CheckCircle2 className="h-3.5 w-3.5" />}
-                                        {status === 'pending' && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                                        {status === 'none' && <ShieldCheck className="h-3.5 w-3.5" />}
-                                        {status === 'verified' ? '인증됨' : status === 'pending' ? '확인중' : '인증 필요'}
-                                      </span>
-                                    )
-                                  })()}
-                                </>
-                              )}
-                              {entries[category.key].length > 1 && (
+                        <div className="mb-2 flex items-center justify-between gap-2">
+                          <span className="flex items-center gap-2 text-[12px] font-semibold text-gray-400">
+                            {entries[category.key].length > 1 && (
+                              <>
+                                {category.title.replace(' 입력', '')} {index + 1}
+                                {!isEntryComplete(category, entry) && (
+                                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10.5px] font-semibold text-amber-600">
+                                    필수 항목을 입력해주세요
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </span>
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            {category.fileUpload && (
+                              <>
                                 <button
                                   type="button"
-                                  onClick={() => removeEntry(category.key, index)}
-                                  aria-label="삭제"
-                                  className="text-gray-300 hover:text-red-500"
+                                  onClick={() => setUploadTarget({ categoryKey: category.key, index })}
+                                  className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11.5px] font-semibold text-gray-500 transition-colors hover:bg-gray-50"
                                 >
-                                  <Trash2 className="h-3.5 w-3.5" />
+                                  <Paperclip className="h-3.5 w-3.5" />
+                                  파일선택
                                 </button>
-                              )}
-                            </div>
+                                {(() => {
+                                  const status = getEvidenceStatus(entry)
+                                  return (
+                                    <span
+                                      className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11.5px] font-semibold ${
+                                        status === 'verified'
+                                          ? 'border-emerald-200 bg-white text-emerald-600'
+                                          : status === 'pending'
+                                            ? 'border-blue-200 bg-white text-blue-600'
+                                            : 'border-amber-200 bg-white text-amber-600'
+                                      }`}
+                                    >
+                                      {status === 'verified' && <CheckCircle2 className="h-3.5 w-3.5" />}
+                                      {status === 'pending' && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                                      {status === 'none' && <ShieldCheck className="h-3.5 w-3.5" />}
+                                      {status === 'verified' ? '인증됨' : status === 'pending' ? '확인중' : '인증 필요'}
+                                    </span>
+                                  )
+                                })()}
+                              </>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => removeEntry(category.key, index)}
+                              aria-label="삭제"
+                              className="text-gray-300 hover:text-red-500"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
                           </div>
-                        )}
+                        </div>
                         {entry._fileName && (
                           <p className="mb-2 flex items-center gap-1.5 text-[11.5px] font-medium text-blue-600">
                             <Paperclip className="h-3.5 w-3.5" />

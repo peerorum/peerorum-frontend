@@ -24,6 +24,7 @@ import {
   refreshAuthentication,
   saveAuthenticationSession,
   signupLocal,
+  updateRealName,
 } from '../../api/auth'
 
 type Step = 'method' | 'account' | 'terms' | 'basic' | 'compare' | 'nickname' | 'complete'
@@ -281,6 +282,10 @@ export default function SignupPage() {
       const currentYear = new Date().getFullYear()
       const entranceYear = currentYear - gradeNum + 1
 
+      if (signupMethod === 'oauth' && name.trim()) {
+        await updateRealName(name.trim())
+      }
+
       await createMyProfile({
         university: school,
         major: department || '미정',
@@ -355,13 +360,6 @@ export default function SignupPage() {
             >
               카카오로 회원가입
             </button>
-            <button
-              type="button"
-              onClick={() => alert('Apple 회원가입은 현재 준비 중입니다.')}
-              className="flex w-full items-center justify-center rounded-xl border border-gray-200 py-3 text-[14px] font-medium text-gray-400"
-            >
-              Apple로 회원가입
-            </button>
           </div>
 
           <p className="mt-6 text-center text-[13px] text-gray-500">
@@ -391,7 +389,7 @@ export default function SignupPage() {
               minLength={2}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="이름을 입력해주세요"
+              placeholder="실명을 입력해주세요"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 text-[14px] outline-none placeholder:text-gray-400 focus:border-blue-500"
             />
             <input
@@ -548,6 +546,23 @@ export default function SignupPage() {
                 setStep('compare')
               }}
             >
+              {signupMethod === 'oauth' && (
+                <div>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-900">
+                    실명 *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    minLength={2}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="실명을 입력해주세요"
+                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-[14px] outline-none placeholder:text-gray-400 focus:border-blue-500"
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-900">학교</label>
                 <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-[14px] text-ink-900">

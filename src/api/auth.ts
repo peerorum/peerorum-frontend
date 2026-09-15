@@ -96,3 +96,7 @@ export function getApiErrorMessage(
 export const verifyPassword = async (password: string): Promise<void> => {
   await api.post('/auth/verify-password', { password })
 }
+
+export const updateRealName = async (name: string): Promise<void> => {
+  await api.put('/auth/me/name', { name })
+}

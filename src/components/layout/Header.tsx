@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: '서비스 소개', href: '/#service-intro' },
   { label: '이용 방법', href: '/#how-to-use' },
   { label: '고객지원', href: '/#support' },
+  { label: '피드백', href: '/feedback' },
 ]
 
 const SECTION_IDS = ['service-intro', 'how-to-use', 'support']

@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { FileText, LogOut, Settings, ShieldCheck } from 'lucide-react'
+import { FileText, LogOut, MessageSquare, Settings, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const PRIMARY_ITEMS = [
   { label: '내 스펙', to: '/mypage/specs', icon: FileText },
   { label: '인증 현황', to: '/mypage/verification', icon: ShieldCheck },
+  { label: '내 피드백', to: '/mypage/feedback', icon: MessageSquare },
 ]
 
 const SECONDARY_ITEMS = [{ label: '계정 설정', to: '/mypage/settings/account', icon: Settings }]

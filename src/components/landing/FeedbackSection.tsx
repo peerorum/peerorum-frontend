@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import { ArrowRight, ChevronUp, Heart, Lock } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ArrowRight, Heart, Lock, Megaphone } from 'lucide-react'
 import FeedbackModal from './FeedbackModal'
+import { useAuth } from '../../context/AuthContext'
+import { fetchPublishedFeedbacks, type PublishedFeedback } from '../../api/feedback'
 
-const TABS = ['전체', '개선 예정', '개선 중', '완료']
-
-const FEEDBACKS = [
-  {
-    votes: 128,
-    title: '학교/학과 필터 세분화',
-    description: '더 정확한 비교를 위해 필터를 세분화했어요.',
-    status: '개선 완료',
-    statusClass: 'bg-emerald-50 text-emerald-600',
-  },
-  {
-    votes: 96,
-    title: '스펙 항목 직접 추가 기능',
-    description: '원하는 스펙 항목을 직접 추가할 수 있어요.',
-    status: '개선 중',
-    statusClass: 'bg-amber-50 text-amber-600',
-  },
-  {
-    votes: 74,
-    title: '모바일 UI/UX 개선',
-    description: '더 편리한 모바일 환경을 위해 개선해요.',
-    status: '개선 예정',
-    statusClass: 'bg-blue-50 text-blue-600',
-  },
-]
+const PREVIEW_COUNT = 3
 
 export default function FeedbackSection() {
+  const { isLoggedIn } = useAuth()
+  const navigate = useNavigate()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [feedbacks, setFeedbacks] = useState<PublishedFeedback[]>([])
+
+  useEffect(() => {
+    fetchPublishedFeedbacks()
+      .then((data) => setFeedbacks(data.slice(0, PREVIEW_COUNT)))
+      .catch((e) => console.error(e))
+  }, [])
+
+  const handleLeaveFeedbackClick = () => {
+    if (isLoggedIn) {
+      setFeedbackOpen(true)
+    } else {
+      navigate('/login')
+    }
+  }
 
   return (
     <section className="bg-gray-50 px-6 py-24">
@@ -49,7 +45,7 @@ export default function FeedbackSection() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => setFeedbackOpen(true)}
+              onClick={handleLeaveFeedbackClick}
               className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-colors hover:bg-blue-700"
             >
               피드백 남기기
@@ -59,7 +55,7 @@ export default function FeedbackSection() {
 
           <div className="mt-6 flex items-center gap-1.5 text-[13px] text-gray-400">
             <Lock className="h-3.5 w-3.5" />
-            모든 피드백은 익명으로 안전하게 관리됩니다.
+            모든 피드백은 안전하게 관리됩니다.
           </div>
         </div>
 
@@ -71,49 +67,44 @@ export default function FeedbackSection() {
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
             </div>
 
-            <h3 className="text-[16px] font-bold text-ink-900">피드백 보드</h3>
-            <p className="mt-1 text-[13px] text-gray-400">
-              여러분의 의견을 확인하고 서비스에 반영하고 있어요.
-            </p>
-
-            <div className="mt-4 flex gap-2">
-              {TABS.map((tab, i) => (
-                <span
-                  key={tab}
-                  className={`rounded-full px-3.5 py-1.5 text-[12.5px] font-medium ${
-                    i === 0 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  {tab}
-                </span>
-              ))}
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h3 className="text-[16px] font-bold text-ink-900">피드백 보드</h3>
+                <p className="mt-1 text-[13px] text-gray-400">
+                  여러분의 의견을 확인하고 서비스에 반영하고 있어요.
+                </p>
+              </div>
+              <Link
+                to="/feedback"
+                className="flex shrink-0 items-center gap-1 whitespace-nowrap text-[13px] font-semibold text-blue-600 hover:text-blue-700"
+              >
+                전체보기
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
             <div className="mt-5 flex flex-col gap-3">
-              {FEEDBACKS.map((item) => (
-                <div
-                  key={item.title}
-                  className="flex items-start gap-3 rounded-xl border border-gray-100 p-3.5"
-                >
-                  <div className="flex w-9 shrink-0 flex-col items-center gap-0.5 rounded-lg bg-gray-50 py-1.5 text-gray-500">
-                    <ChevronUp className="h-3.5 w-3.5" />
-                    <span className="text-[12px] font-bold">{item.votes}</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13.5px] font-semibold text-ink-900">
-                      {item.title}
-                    </p>
-                    <p className="mt-0.5 truncate text-[12px] text-gray-400">
-                      {item.description}
-                    </p>
-                  </div>
-                  <span
-                    className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.statusClass}`}
+              {feedbacks.length === 0 ? (
+                <p className="rounded-xl border border-gray-100 p-4 text-center text-[13px] text-gray-400">
+                  아직 게시된 개선사항이 없어요.
+                </p>
+              ) : (
+                feedbacks.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start gap-3 rounded-xl border border-gray-100 p-3.5"
                   >
-                    {item.status}
-                  </span>
-                </div>
-              ))}
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                      <Megaphone className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-[13px] leading-relaxed text-ink-900">
+                        {item.boardSummary}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

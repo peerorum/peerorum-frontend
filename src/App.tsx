@@ -15,6 +15,7 @@ import MySpecsPage from './pages/mypage/MySpecsPage'
 import SpecRegisterPage from './pages/mypage/SpecRegisterPage'
 import SpecEditPage from './pages/mypage/SpecEditPage'
 import VerificationStatusPage from './pages/mypage/VerificationStatusPage'
+import MyFeedbackPage from './pages/mypage/MyFeedbackPage'
 import PersonalInfoEditPage from './pages/mypage/PersonalInfoEditPage'
 import AccountSettingsPage from './pages/mypage/AccountSettingsPage'
 import ComparePage from './pages/compare/ComparePage'
@@ -59,6 +60,7 @@ function App() {
             <Route path="/mypage/specs/register" element={<SpecRegisterPage />} />
             <Route path="/mypage/specs/edit" element={<SpecEditPage />} />
             <Route path="/mypage/verification" element={<VerificationStatusPage />} />
+            <Route path="/mypage/feedback" element={<MyFeedbackPage />} />
             <Route path="/mypage/verification/edit-info" element={<PersonalInfoEditPage />} />
             <Route path="/mypage/settings/account" element={<AccountSettingsPage />} />
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -103,6 +103,23 @@ const NICKNAME_SUGGESTIONS = [
   '작심삼일탈출',
   '불타는의지',
   '한걸음씩전진',
+  '힘찬망아지',
+  '씩씩한판다',
+  '조용한여우비',
+  '반짝이는눈송이',
+  '든든한지원군',
+  '빛나는신입생',
+  '알찬하루하루',
+  '웃음가득청춘',
+  '포기란없다',
+  '오늘의다짐',
+  '차분한올빼미',
+  '부지런한벌',
+  '꿈꾸는펭귄',
+  '성장중인나무',
+  '자신감뿜뿜',
+  '노력하는새싹',
+  '꾸준함이정답',
 ]
 
 const SPEC_LINK_GUIDE = [
@@ -161,10 +178,12 @@ export default function SignupPage() {
   const isOnboarding =
     searchParams.get('mode') === 'onboarding' &&
     Boolean(localStorage.getItem('token'))
+  const onboardingMethod: SignupMethod =
+    searchParams.get('method') === 'local' ? 'local' : 'oauth'
 
   const [step, setStep] = useState<Step>(isOnboarding ? 'terms' : 'method')
   const [signupMethod, setSignupMethod] = useState<SignupMethod | null>(
-    isOnboarding ? 'oauth' : null,
+    isOnboarding ? onboardingMethod : null,
   )
   const [checked, setChecked] = useState<Record<string, boolean>>({
     age: false,
@@ -191,6 +210,7 @@ export default function SignupPage() {
   const [desiredJob, setDesiredJob] = useState('')
 
   const [nickname, setNickname] = useState('')
+  const nicknameCounterRef = useRef(0)
 
   const allRequiredChecked = REQUIRED_TERM_KEYS.every((key) => checked[key])
   const allChecked = Object.values(checked).every(Boolean)
@@ -225,7 +245,7 @@ export default function SignupPage() {
   }
 
   const handleTermsContinue = async () => {
-    if (signupMethod === 'oauth') {
+    if (isOnboarding) {
       setStep('basic')
       return
     }
@@ -246,13 +266,6 @@ export default function SignupPage() {
       })
 
       saveAuthenticationSession(session)
-      login({
-        name: session.name,
-        email: email.trim(),
-        role: 'user',
-        hasSpec: false,
-        provider: 'LOCAL',
-      })
       setStep('basic')
     } catch (error) {
       setErrorMessage(
@@ -268,8 +281,10 @@ export default function SignupPage() {
   }
 
   const fillRandomNickname = () => {
-    const pool = NICKNAME_SUGGESTIONS.filter((n) => n !== nickname)
-    setNickname(pool[Math.floor(Math.random() * pool.length)])
+    const base = NICKNAME_SUGGESTIONS[Math.floor(Math.random() * NICKNAME_SUGGESTIONS.length)]
+    nicknameCounterRef.current += 1
+    const suffix = String(nicknameCounterRef.current)
+    setNickname(`${base.slice(0, 10 - suffix.length)}${suffix}`)
   }
 
   const handleProfileSubmit = async (e: React.FormEvent) => {

@@ -67,6 +67,7 @@ export function saveAuthenticationSession(
 }
 
 export function clearAuthenticationSession() {
+  sessionStorage.clear()
   localStorage.removeItem('token')
   localStorage.removeItem('role')
   localStorage.removeItem('uuid')

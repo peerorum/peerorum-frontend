@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProfileDetail } from '../../api/comparison'
 import type { ProfileDetailResponse } from '../../api/comparison'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   Award,
   ArrowLeft,
@@ -39,7 +39,6 @@ function activeGpaBucketIndex(gpa: number) {
 
 export default function AnonymousProfileDetailPage() {
   const navigate = useNavigate()
-  const location = useLocation()
   const [activeTab, setActiveTab] = useState<'spec' | 'timeline'>('spec')
   const { studentId } = useParams<{ studentId: string }>()
   const [student, setStudent] = useState<ProfileDetailResponse | null>(null)
@@ -75,9 +74,7 @@ export default function AnonymousProfileDetailPage() {
 
   const activeGpaIndex = activeGpaBucketIndex(student.gpa)
   
-  const gpaPercentile =
-    (location.state as { gpaPercentile?: number } | null)?.gpaPercentile ??
-    student.gpaPercentile
+  const gpaPercentile = student.gpaPercentile
 
   const activityString = student.activities && student.activities.length > 0 
     ? `대외활동 ${student.activities.length}회` 

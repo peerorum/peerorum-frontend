@@ -117,7 +117,7 @@ export default function CompareSpec2Page() {
       uuid: p.anonymousUuid,
       department: p.major,
       gpa: p.gpa.toFixed(2),
-      gpaPercentile: Math.max(1, Math.ceil((rank / (sortedProfiles.length || 1)) * 100)),
+      gpaPercentile: p.gpaPercentile,
       isMe: p.virtualNickname === myNickname,
       lang: p.toeicScore > 0 ? 'TOEIC ' + p.toeicScore : '없음',
       certs: p.verificationCount + '개',
@@ -360,7 +360,6 @@ export default function CompareSpec2Page() {
                     key={student.uuid}
                     onClick={() => navigate(
                       `/compare/${encodeURIComponent(student.uuid)}`,
-                      { state: { gpaPercentile: student.gpaPercentile } },
                     )}
                     className={`cursor-pointer border-b border-gray-50 last:border-none hover:bg-gray-50/70 ${student.isMe ? 'bg-blue-50/50' : ''}`}
                   >

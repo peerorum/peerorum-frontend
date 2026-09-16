@@ -8,6 +8,7 @@ import ComparisonSection from '../components/landing/ComparisonSection'
 import HowItWorksSection from '../components/landing/HowItWorksSection'
 import FeedbackSection from '../components/landing/FeedbackSection'
 import CTASection from '../components/landing/CTASection'
+import MainNoticeModal from '../components/landing/MainNoticeModal'
 import { scrollToSection } from '../utils/scroll'
 
 export default function LandingPage() {
@@ -23,6 +24,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <MainNoticeModal />
       <Header />
       <main>
         <div id="service-intro">

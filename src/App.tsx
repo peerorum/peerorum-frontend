@@ -27,6 +27,7 @@ import AdminVerificationsPage from './pages/admin/AdminVerificationsPage'
 import AdminSuspensionsPage from './pages/admin/AdminSuspensionsPage'
 import AdminPlaceholderPage from './pages/admin/AdminPlaceholderPage'
 import AdminFeedbacksPage from './pages/admin/AdminFeedbacksPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 const ADMIN_PLACEHOLDER_ROUTES = [
   { path: '/admin/spec-cards', title: '스펙 카드 관리' },
@@ -168,6 +169,8 @@ function App() {
                 }
               />
             ))}
+
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </SpecProvider>
       </AuthProvider>

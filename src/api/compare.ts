@@ -8,6 +8,7 @@ export interface CompareSpecProfile {
   entranceYear: number
   desiredJob: string
   gpa: number
+  gpaPercentile: number
   toeicScore: number
   verificationCount: number
   internCount: number

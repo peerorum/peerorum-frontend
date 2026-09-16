@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { SpecProvider } from './context/SpecContext'
 import RequireAdmin from './components/auth/RequireAdmin'
+import RequireAuth from './components/auth/RequireAuth'
 import ScrollToTop from './components/ScrollToTop'
 import LandingPage from './pages/LandingPage'
 import FeedbackBoardPage from './pages/FeedbackBoardPage'
@@ -56,13 +57,62 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/signup" element={<SignupPage />} />
 
-            <Route path="/mypage/specs" element={<MySpecsPage />} />
-            <Route path="/mypage/specs/register" element={<SpecRegisterPage />} />
-            <Route path="/mypage/specs/edit" element={<SpecEditPage />} />
-            <Route path="/mypage/verification" element={<VerificationStatusPage />} />
-            <Route path="/mypage/feedback" element={<MyFeedbackPage />} />
-            <Route path="/mypage/verification/edit-info" element={<PersonalInfoEditPage />} />
-            <Route path="/mypage/settings/account" element={<AccountSettingsPage />} />
+            <Route
+              path="/mypage/specs"
+              element={
+                <RequireAuth>
+                  <MySpecsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/specs/register"
+              element={
+                <RequireAuth>
+                  <SpecRegisterPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/specs/edit"
+              element={
+                <RequireAuth>
+                  <SpecEditPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/verification"
+              element={
+                <RequireAuth>
+                  <VerificationStatusPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/feedback"
+              element={
+                <RequireAuth>
+                  <MyFeedbackPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/verification/edit-info"
+              element={
+                <RequireAuth>
+                  <PersonalInfoEditPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mypage/settings/account"
+              element={
+                <RequireAuth>
+                  <AccountSettingsPage />
+                </RequireAuth>
+              }
+            />
 
             <Route path="/compare" element={<ComparePage />} />
             <Route path="/compare/:studentId" element={<AnonymousProfileDetailPage />} />

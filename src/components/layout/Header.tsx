@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
 import Logo from '../ui/Logo'
 import ProfileMenu from './ProfileMenu'
 import { useAuth } from '../../context/AuthContext'
@@ -20,6 +21,11 @@ export default function Header() {
   const location = useLocation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     if (location.pathname !== '/') {
@@ -104,27 +110,74 @@ export default function Header() {
           })}
         </nav>
 
-        <div className="flex h-9 items-center gap-5">
-          {isLoggedIn ? (
-            <ProfileMenu />
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-[14px] font-medium text-gray-600 hover:text-ink-900"
-              >
-                로그인
-              </Link>
-              <Link
-                to="/signup"
-                className="rounded-full bg-blue-600 px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-blue-700"
-              >
-                회원가입
-              </Link>
-            </>
-          )}
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 items-center gap-5">
+            {isLoggedIn ? (
+              <ProfileMenu />
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-[14px] font-medium text-gray-600 hover:text-ink-900"
+                >
+                  로그인
+                </Link>
+                <Link
+                  to="/signup"
+                  className="rounded-full bg-blue-600 px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-blue-700"
+                >
+                  회원가입
+                </Link>
+              </>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="flex h-9 w-9 items-center justify-center text-gray-600 md:hidden"
+            aria-label={mobileMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <nav className="flex flex-col gap-1 border-t border-black/5 bg-white px-6 py-4 md:hidden">
+          {NAV_ITEMS.map((item) => {
+            const sectionId = item.href.includes('#') ? item.href.split('#')[1] : null
+            const isActive =
+              sectionId !== null
+                ? activeSection === sectionId
+                : location.pathname === item.href
+
+            const linkClassName = `rounded-lg px-2 py-2.5 text-[15px] font-medium transition-colors ${
+              isActive ? 'text-blue-600' : 'text-gray-600 hover:text-ink-900'
+            }`
+
+            if (sectionId === null) {
+              return (
+                <Link key={item.label} to={item.href} className={linkClassName}>
+                  {item.label}
+                </Link>
+              )
+            }
+
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => handleSectionClick(e, item.href)}
+                className={linkClassName}
+              >
+                {item.label}
+              </a>
+            )
+          })}
+        </nav>
+      )}
     </header>
   )
 }

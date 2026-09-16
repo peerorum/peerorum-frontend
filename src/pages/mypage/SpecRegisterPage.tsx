@@ -10,6 +10,7 @@ import {
   Loader2,
   Paperclip,
   Plus,
+  Save,
   ShieldCheck,
   Trash2,
   Trophy,
@@ -260,9 +261,19 @@ export default function SpecRegisterPage() {
   )
   const [uploadTarget, setUploadTarget] = useState<{ categoryKey: string; index: number } | null>(null)
 
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
+  const [showSavedToast, setShowSavedToast] = useState(false)
+
   useEffect(() => {
     sessionStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
   }, [entries])
+
+  const handleSaveDraft = () => {
+    sessionStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
+    setLastSavedAt(new Date())
+    setShowSavedToast(true)
+    window.setTimeout(() => setShowSavedToast(false), 2000)
+  }
 
   const isEntryComplete = (category: CategoryConfig, entry: Entry) =>
     category.fields
@@ -365,17 +376,32 @@ export default function SpecRegisterPage() {
             나의 스펙을 등록하고 다른 학생들과 비교해보세요.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            clearRegisterDraft()
-            navigate('/mypage/specs')
-          }}
-          className="flex shrink-0 items-center gap-1 text-[13px] font-medium text-gray-400 hover:text-gray-600"
-        >
-          <X className="h-3.5 w-3.5" />
-          등록 취소
-        </button>
+        <div className="flex shrink-0 items-center gap-3">
+          {lastSavedAt && (
+            <span className={`text-[11.5px] text-gray-400 transition-opacity ${showSavedToast ? 'opacity-100' : 'opacity-70'}`}>
+              {showSavedToast ? '임시저장 완료' : `마지막 저장 ${lastSavedAt.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleSaveDraft}
+            className="flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-[13px] font-medium text-gray-600 hover:bg-gray-50"
+          >
+            <Save className="h-3.5 w-3.5" />
+            임시저장
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              clearRegisterDraft()
+              navigate('/mypage/specs')
+            }}
+            className="flex items-center gap-1 text-[13px] font-medium text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-3.5 w-3.5" />
+            등록 취소
+          </button>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2 overflow-x-auto pb-1">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Mail, Phone } from "lucide-react";
+import { Clock, Mail } from "lucide-react";
 import Logo from "../ui/Logo";
 import LegalTermsModal from "./LegalTermsModal";
 import { LEGAL_TERMS } from "../../data/legalTerms";
@@ -80,10 +80,6 @@ export default function Footer() {
                 >
                   @peer_oreum
                 </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5" />
-                010-3718-2979
               </li>
               <li className="flex items-start gap-2">
                 <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" />

@@ -164,12 +164,6 @@ export default function LoginPage() {
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-[#FEE500] py-3 text-[14px] font-medium text-[#191600] hover:brightness-95">
             카카오로 계속하기
           </button>
-          <button
-            type="button"
-            onClick={() => alert('Apple 로그인은 현재 준비 중입니다.')}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 py-3 text-[14px] font-medium text-ink-900 hover:bg-gray-50">
-            Apple로 계속하기
-          </button>
         </div>
 
         <p className="mt-6 text-center text-[13px] text-gray-500">

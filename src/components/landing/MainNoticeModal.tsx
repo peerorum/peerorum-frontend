@@ -23,18 +23,12 @@ export default function MainNoticeModal() {
   useEffect(() => {
     if (!open) return
 
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-    document.body.style.overflow = 'hidden'
-    document.body.style.paddingRight = `${scrollbarWidth}px`
-
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false)
     }
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [open])
@@ -51,14 +45,8 @@ export default function MainNoticeModal() {
   if (!open) return null
 
   return (
-    <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4 py-8"
-      onClick={() => setOpen(false)}
-    >
-      <div
-        className="w-full max-w-[380px] overflow-hidden rounded-[28px] bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4 py-8">
+      <div className="w-full max-w-[380px] overflow-hidden rounded-[28px] bg-white shadow-2xl">
         <img src={mainNoticeImage} alt="안심하고 이용해주세요 안내" className="block w-full" />
         <div className="flex items-center justify-center divide-x divide-gray-100 border-t border-gray-100 text-[14px] font-semibold">
           <button

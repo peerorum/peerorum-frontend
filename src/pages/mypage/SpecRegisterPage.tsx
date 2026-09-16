@@ -159,7 +159,7 @@ const SPEC_REGISTER_DRAFT_KEY = 'specRegisterDraft'
 
 function loadRegisterDraft(): Record<string, Entry[]> | null {
   try {
-    const raw = sessionStorage.getItem(SPEC_REGISTER_DRAFT_KEY)
+    const raw = localStorage.getItem(SPEC_REGISTER_DRAFT_KEY)
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
@@ -167,7 +167,7 @@ function loadRegisterDraft(): Record<string, Entry[]> | null {
 }
 
 function clearRegisterDraft() {
-  sessionStorage.removeItem(SPEC_REGISTER_DRAFT_KEY)
+  localStorage.removeItem(SPEC_REGISTER_DRAFT_KEY)
 }
 
 const getEvidenceStatus = (entry: Entry): EvidenceStatus =>
@@ -265,11 +265,11 @@ export default function SpecRegisterPage() {
   const [showSavedToast, setShowSavedToast] = useState(false)
 
   useEffect(() => {
-    sessionStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
+    localStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
   }, [entries])
 
   const handleSaveDraft = () => {
-    sessionStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
+    localStorage.setItem(SPEC_REGISTER_DRAFT_KEY, JSON.stringify(entries))
     setLastSavedAt(new Date())
     setShowSavedToast(true)
     window.setTimeout(() => setShowSavedToast(false), 2000)
@@ -374,6 +374,9 @@ export default function SpecRegisterPage() {
           <h1 className="text-[22px] font-bold text-ink-900">스펙 등록하기</h1>
           <p className="mt-1 text-[13.5px] text-gray-500">
             나의 스펙을 등록하고 다른 학생들과 비교해보세요.
+          </p>
+          <p className="mt-1 text-[12px] text-gray-400">
+            임시저장은 이 브라우저에만 보관돼요. 다른 기기나 브라우저에서는 불러올 수 없어요.
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-3">

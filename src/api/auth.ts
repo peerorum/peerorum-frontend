@@ -76,6 +76,7 @@ export function clearAuthenticationSession() {
   localStorage.removeItem('hasSpec')
   localStorage.removeItem('uiRole')
   localStorage.removeItem('provider')
+  localStorage.removeItem('specRegisterDraft')
 }
 
 export function getApiErrorMessage(

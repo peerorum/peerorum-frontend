@@ -19,6 +19,12 @@ import VerificationStatusPage from './pages/mypage/VerificationStatusPage'
 import MyFeedbackPage from './pages/mypage/MyFeedbackPage'
 import PersonalInfoEditPage from './pages/mypage/PersonalInfoEditPage'
 import AccountSettingsPage from './pages/mypage/AccountSettingsPage'
+import MyMentoringActivityPage from './pages/mypage/MyMentoringActivityPage'
+import MentoringBoardPage from './pages/mentoring/MentoringBoardPage'
+import MentoringPostWritePage from './pages/mentoring/MentoringPostWritePage'
+import MentoringPostDetailPage from './pages/mentoring/MentoringPostDetailPage'
+import MentoringChatListPage from './pages/mentoring/MentoringChatListPage'
+import MentoringChatRoomPage from './pages/mentoring/MentoringChatRoomPage'
 import ComparePage from './pages/compare/ComparePage'
 import AnonymousProfileDetailPage from './pages/compare/AnonymousProfileDetailPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
@@ -30,6 +36,7 @@ import AdminFeedbacksPage from './pages/admin/AdminFeedbacksPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 const ADMIN_PLACEHOLDER_ROUTES = [
+  { path: '/admin/mentoring', title: '멘토멘티 게시판 관리' },
   { path: '/admin/spec-cards', title: '스펙 카드 관리' },
   { path: '/admin/notices', title: '공지사항 관리' },
   { path: '/admin/stats', title: '서비스 통계' },
@@ -50,6 +57,33 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/feedback" element={<FeedbackBoardPage />} />
             <Route path="/feedback/:id" element={<FeedbackDetailPage />} />
+
+            <Route path="/mentoring" element={<MentoringBoardPage />} />
+            <Route path="/mentoring/:postId" element={<MentoringPostDetailPage />} />
+            <Route
+              path="/mentoring/write"
+              element={
+                <RequireAuth>
+                  <MentoringPostWritePage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mentoring/chat"
+              element={
+                <RequireAuth>
+                  <MentoringChatListPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/mentoring/chat/:roomId"
+              element={
+                <RequireAuth>
+                  <MentoringChatRoomPage />
+                </RequireAuth>
+              }
+            />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
@@ -99,6 +133,14 @@ function App() {
               }
             />
             <Route
+              path="/mypage/mentoring"
+              element={
+                <RequireAuth>
+                  <MyMentoringActivityPage />
+                </RequireAuth>
+              }
+            />
+            <Route
               path="/mypage/verification/edit-info"
               element={
                 <RequireAuth>
@@ -115,8 +157,22 @@ function App() {
               }
             />
 
-            <Route path="/compare" element={<ComparePage />} />
-            <Route path="/compare/:studentId" element={<AnonymousProfileDetailPage />} />
+            <Route
+              path="/compare"
+              element={
+                <RequireAdmin>
+                  <ComparePage />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/compare/:studentId"
+              element={
+                <RequireAdmin>
+                  <AnonymousProfileDetailPage />
+                </RequireAdmin>
+              }
+            />
 
             <Route
               path="/admin"

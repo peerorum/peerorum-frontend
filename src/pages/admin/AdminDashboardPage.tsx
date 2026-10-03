@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ClipboardList, UserPlus, Users } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { BarChart3, ClipboardList, UserPlus, Users } from 'lucide-react'
 import AdminLayout from '../../layouts/AdminLayout'
 import StatTile from '../../components/admin/StatTile'
 import SignupTrendChart from '../../components/admin/SignupTrendChart'
@@ -117,6 +118,26 @@ export default function AdminDashboardPage() {
                   <li className="text-center text-[13px] text-gray-400 py-4">최근 가입 사용자가 없습니다.</li>
                 )}
               </ul>
+            </div>
+
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm shadow-black/[0.02]">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                    <BarChart3 className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-[14.5px] font-bold text-ink-900">스펙 비교 관리</p>
+                    <p className="text-[12.5px] text-gray-400">관리자 전용 스펙 비교 도구로 바로가기</p>
+                  </div>
+                </div>
+                <Link
+                  to="/compare"
+                  className="shrink-0 rounded-full bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white hover:bg-blue-700"
+                >
+                  스펙 비교 바로가기
+                </Link>
+              </div>
             </div>
           </div>
         </>

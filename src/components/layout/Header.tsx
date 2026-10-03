@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext'
 import { scrollToSection } from '../../utils/scroll'
 
 const NAV_ITEMS = [
-  { label: '스펙 비교', href: '/compare' },
+  { label: '멘토멘티 게시판', href: '/mentoring' },
   { label: '서비스 소개', href: '/#service-intro' },
   { label: '이용 방법', href: '/#how-to-use' },
   { label: '고객지원', href: '/#support' },

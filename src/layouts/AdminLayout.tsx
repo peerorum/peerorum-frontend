@@ -6,6 +6,7 @@ import {
   BarChart3,
   Briefcase,
   CreditCard,
+  Handshake,
   Home,
   LogOut,
   Megaphone,
@@ -39,6 +40,7 @@ const NAV_GROUPS: { label: string | null; items: NavItem[] }[] = [
   {
     label: '콘텐츠 관리',
     items: [
+      { label: '멘토멘티 게시판 관리', to: '/admin/mentoring', icon: Handshake },
       { label: '스펙 카드 관리', to: '/admin/spec-cards', icon: CreditCard },
       { label: '공지사항 관리', to: '/admin/notices', icon: Megaphone },
       { label: '피드백 관리', to: '/admin/feedbacks', icon: MessageSquare },

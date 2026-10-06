@@ -5,6 +5,7 @@ import RequireAdmin from './components/auth/RequireAdmin'
 import RequireAuth from './components/auth/RequireAuth'
 import ScrollToTop from './components/ScrollToTop'
 import LandingPage from './pages/LandingPage'
+import MainPage from './pages/MainPage'
 import FeedbackBoardPage from './pages/FeedbackBoardPage'
 import FeedbackDetailPage from './pages/FeedbackDetailPage'
 import OAuth2RedirectHandler from './pages/auth/OAuth2RedirectHandler'
@@ -55,6 +56,7 @@ function App() {
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/mainpage" element={<MainPage />} />
             <Route path="/feedback" element={<FeedbackBoardPage />} />
             <Route path="/feedback/:id" element={<FeedbackDetailPage />} />
 

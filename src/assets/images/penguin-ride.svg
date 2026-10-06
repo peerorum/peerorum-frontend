@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="정장에 선글라스를 쓴 피어오름 펭귄이 차 문을 열고 손을 내미는 일러스트">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0ecff"/>
+      <stop offset="1" stop-color="#f0f5ff"/>
+    </linearGradient>
+    <linearGradient id="carBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1369fe"/>
+      <stop offset="1" stop-color="#014cce"/>
+    </linearGradient>
+    <clipPath id="frame"><rect width="640" height="480" rx="28"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="640" height="480" fill="url(#bg)"/>
+
+    <g transform="translate(500 110)">
+      <polygon points="0,-96 22,-30 88,-44 40,4 92,44 24,38 12,104 -14,44 -80,70 -40,10 -92,-26 -26,-28" fill="#bed5fe"/>
+      <circle r="38" fill="#86b2fe"/>
+      <circle r="18" fill="#f0f5ff"/>
+    </g>
+    <circle cx="590" cy="190" r="34" fill="#bed5fe" opacity="0.8"/>
+    <circle cx="560" cy="214" r="22" fill="#bed5fe" opacity="0.8"/>
+    <circle cx="430" cy="62" r="5" fill="#4388fe"/>
+    <circle cx="396" cy="96" r="3.5" fill="#4388fe"/>
+    <rect x="452" y="30" width="9" height="9" rx="2" fill="#4388fe" transform="rotate(20 456 34)"/>
+    <rect x="580" y="58" width="8" height="8" rx="2" fill="#4388fe" transform="rotate(-15 584 62)"/>
+
+    <path d="M60 110 Q48 84 76 80 Q86 56 114 66 Q134 54 148 76 Q170 80 164 104 Q156 112 112 110 Q70 116 60 110 Z" fill="#ffffff" opacity="0.9"/>
+
+    <g stroke="#86b2fe" stroke-width="7" stroke-linecap="round">
+      <line x1="14" y1="300" x2="52" y2="300"/>
+      <line x1="4" y1="332" x2="56" y2="332"/>
+      <line x1="20" y1="364" x2="54" y2="364"/>
+    </g>
+
+    <ellipse cx="330" cy="436" rx="280" ry="12" fill="#015dfc" opacity="0.14"/>
+
+    <path d="M70 322 Q72 296 100 292 L172 286 L214 198 Q224 178 248 178 L404 178 Q428 178 440 198 L486 282 L556 290 Q586 294 588 322 L588 364 Q588 390 564 390 L92 390 Q68 390 68 364 Z" fill="url(#carBody)"/>
+    <path d="M228 200 Q234 192 246 192 L262 192 L262 282 L190 282 Z" fill="#bed5fe"/>
+    <rect x="96" y="318" width="40" height="12" rx="6" fill="#f0f5ff" opacity="0.6"/>
+    <ellipse cx="578" cy="316" rx="9" ry="12" fill="#ffd166"/>
+
+    <path d="M272 192 L404 192 Q420 192 428 206 L470 284 L470 342 L272 342 Z" fill="#0f1b3d"/>
+    <rect x="280" y="212" width="44" height="124" rx="14" fill="#2a3557"/>
+    <ellipse cx="428" cy="272" rx="10" ry="30" fill="none" stroke="#8a97b8" stroke-width="7"/>
+
+    <g>
+      <path d="M306 280 Q300 272 312 268 L388 268 Q400 272 394 280 L402 342 L298 342 Z" fill="#1f2433"/>
+      <path d="M338 270 L362 270 L350 310 Z" fill="#ffffff"/>
+      <path d="M346 278 L354 278 L358 302 L350 314 L342 302 Z" fill="#015dfc"/>
+
+      <ellipse cx="420" cy="262" rx="14" ry="20" fill="#1369fe" transform="rotate(-20 420 262)"/>
+
+      <ellipse cx="362" cy="190" rx="9" ry="15" fill="#1369fe" transform="rotate(30 362 190)"/>
+      <ellipse cx="374" cy="196" rx="8" ry="13" fill="#1369fe" transform="rotate(55 374 196)"/>
+      <circle cx="350" cy="240" r="48" fill="#1369fe"/>
+      <path d="M350 234 C337 216 309 222 312 250 C315 270 332 280 350 282 C368 280 385 270 388 250 C391 222 363 216 350 234 Z" fill="#ffffff"/>
+      <ellipse cx="324" cy="262" rx="7" ry="4" fill="#ff9db0" opacity="0.6"/>
+      <ellipse cx="376" cy="262" rx="7" ry="4" fill="#ff9db0" opacity="0.6"/>
+      <rect x="318" y="236" width="28" height="16" rx="7" fill="#11131a"/>
+      <rect x="354" y="236" width="28" height="16" rx="7" fill="#11131a"/>
+      <line x1="345" y1="242" x2="355" y2="242" stroke="#11131a" stroke-width="4"/>
+      <rect x="322" y="239" width="9" height="4" rx="2" fill="#ffffff" opacity="0.5"/>
+      <rect x="358" y="239" width="9" height="4" rx="2" fill="#ffffff" opacity="0.5"/>
+      <path d="M340 260 Q350 254 360 260 Q356 270 350 271 Q344 270 340 260 Z" fill="#ffa53a"/>
+
+      <path d="M318 286 L330 304 L248 352 L238 336 Z" fill="#1f2433"/>
+      <rect x="236" y="334" width="20" height="10" rx="4" fill="#ffffff" transform="rotate(-30 246 339)"/>
+      <ellipse cx="226" cy="352" rx="26" ry="14" fill="#1369fe" transform="rotate(-30 226 352)"/>
+    </g>
+
+    <circle cx="160" cy="390" r="44" fill="#11131a"/>
+    <circle cx="160" cy="390" r="20" fill="#bed5fe"/>
+    <circle cx="500" cy="390" r="44" fill="#11131a"/>
+    <circle cx="500" cy="390" r="20" fill="#bed5fe"/>
+
+    <path d="M470 198 L552 150 L566 372 L472 344 Z" fill="#1369fe"/>
+    <path d="M476 208 L544 170 L550 252 L478 274 Z" fill="#86b2fe" opacity="0.85"/>
+    <rect x="490" y="290" width="30" height="8" rx="4" fill="#014cce"/>
+    <path d="M552 150 L566 372" stroke="#014cce" stroke-width="4"/>
+  </g>
+</svg>
